@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#000000"/> <!-- Черный цвет галочки -->
+    <stroke android:color="#000000" android:width="1dp"/> <!-- Черная рамка -->
+    <corners android:radius="1dp"/> <!-- Закругленные углы -->
+    <size android:width="24dp" android:height="24dp"/> <!-- Размер галочки -->
+</shape>

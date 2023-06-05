@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Esportes A-Z"
+        android:id="@+id/home"
+        android:icon="@drawable/esportes"/>
+
+    <item android:title="Ao vivo"
+        android:id="@+id/vivo"
+        android:icon="@drawable/vivo"/>
+
+    <item android:title="Cupom"
+        android:id="@+id/cupom"
+        android:icon="@drawable/cupom"/>
+
+    <item android:title="Promocoes"
+        android:id="@+id/promocoes"
+        android:icon="@drawable/promocoes"/>
+
+    <item android:title="Apostas"
+        android:id="@+id/apostas"
+        android:icon="@drawable/apostas"/>
+
+    <item android:title="Virtuais"
+        android:id="@+id/virtuais"
+        android:icon="@drawable/virtuais"/>
+
+    <item android:title="Cassino"
+        android:id="@+id/cassino"
+        android:icon="@drawable/cassino"/>
+</menu>

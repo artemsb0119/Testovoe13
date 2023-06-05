@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/constraint_match">
+
+    <TextView
+        android:id="@+id/goals"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.33"
+        android:text="0,5"
+        android:background="@drawable/constraint_match"
+        android:textSize="18sp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/gray"/>
+
+    <TextView
+        android:id="@+id/bolshe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="1.06"
+        android:background="@drawable/constraint_match"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:layout_weight="0.33"/>
+    <TextView
+        android:id="@+id/menshe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="8.50"
+        android:background="@drawable/constraint_match"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:layout_weight="0.33"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
