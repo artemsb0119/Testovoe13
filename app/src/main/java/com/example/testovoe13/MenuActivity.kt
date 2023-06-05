@@ -55,11 +55,6 @@ class MenuActivity : AppCompatActivity(), Cupon.OnButtonClickListener {
         tab6.setIcon(R.drawable.virtuais)
         tabLayout.addTab(tab6)
 
-        val tab7: TabLayout.Tab = tabLayout.newTab()
-        tab7.text = "Cassino"
-        tab7.setIcon(R.drawable.cassino)
-        tabLayout.addTab(tab7)
-
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = tab.position

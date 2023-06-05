@@ -25,7 +25,4 @@
         android:id="@+id/virtuais"
         android:icon="@drawable/virtuais"/>
 
-    <item android:title="Cassino"
-        android:id="@+id/cassino"
-        android:icon="@drawable/cassino"/>
 </menu>
