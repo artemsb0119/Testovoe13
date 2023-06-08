@@ -13,15 +13,14 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.onesignal.OneSignal
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
 import java.util.*
 
 class SplashActivity : AppCompatActivity() {
+
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     companion object {
         private const val SERVER_URL = "http://135.181.248.237/splash.php"
@@ -31,9 +30,6 @@ class SplashActivity : AppCompatActivity() {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var imageViewFon1: ImageView
-
-    private lateinit var whatDo: String
-    private lateinit var answer: String
 
     private var isActivityDestroyed = false
 
@@ -66,81 +62,72 @@ class SplashActivity : AppCompatActivity() {
             uniqueId = UUID.randomUUID().toString()
             sharedPreferences.edit().putString("uniqueId", uniqueId).apply()
         }
+        startNextActivity()
+    }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                val phoneName = getPhoneName()
-                val locale = Locale.getDefault().language
+    private fun startNextActivity() {
 
-                val response =
-                    URL("$SERVER_URL?phone_name=$phoneName&locale=$locale&unique=$uniqueId").readText()
-                withContext(Dispatchers.Main) {
-                    if (response.isNotEmpty()) {
-                        val jsonResponse = JSONObject(response)
-                        answer = jsonResponse.getString("url")
-                        Log.d("AAAA", answer)
-                        when (answer) {
-                            "no" -> {
-                                OneSignal.disablePush(false)
-                                whatDo = "main"
-                            }
-                            "nopush" -> {
-                                OneSignal.disablePush(true)
-                                whatDo = "main"
-                            }
-                            else -> {
-                                OneSignal.disablePush(false)
-                                whatDo = "web"
-                            }
-                        }
-                    } else {
-                        whatDo = ""
-                        val builder = AlertDialog.Builder(getApplicationContext())
-                        builder.setTitle("Check Your Internet Connection")
-                        builder.setMessage("Please make sure your device is connected to the internet.")
-                        builder.setPositiveButton("OK") { dialog, which ->
-                            recreate()
-                        }
-                        val dialog = builder.create()
-                        dialog.show()
-                    }
-                }
-
-
-            } catch (e: Exception) {
-                whatDo = ""
-            }
+        val doMain = {
+            val intent = Intent(this@SplashActivity, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
-        Handler().postDelayed({
-            progressBar.visibility = View.GONE
+        coroutineScope.launch {
+            launchProgressBar()
+            val mod = getStartMod()
 
-            if (!isActivityDestroyed) {
-                when (whatDo) {
-                    "main" -> {
-                        val intent = Intent(this, MenuActivity::class.java)
-                        startActivity(intent)
-                        finish()
+            progressBar.visibility = View.GONE
+            progressBar.progress = 100
+
+            mod?.let { startMod ->
+                when (startMod) {
+                    "no" -> doMain.invoke()
+                    "nopush" -> {
+                        OneSignal.disablePush(true)
+                        doMain.invoke()
                     }
-                    "web" -> {
-                        val intent = Intent(this, WebViewActivity::class.java)
-                        intent.putExtra("url", answer)
-                        startActivity(intent)
-                        finish()
-                    }
+
                     else -> {
-                        val builder = AlertDialog.Builder(this, R.style.Theme_Testovoe13)
-                        builder.setTitle("Check Your Internet Connection")
-                        builder.setMessage("Please make sure your device is connected to the internet.")
-                        builder.setPositiveButton("OK") { dialog, which ->
-                            recreate()
-                        }
-                        val dialog = builder.create()
-                        dialog.show()
+                        val intent = Intent(this@SplashActivity, WebViewActivity::class.java)
+                        intent.putExtra("url", mod)
+                        startActivity(intent)
+                        finish()
                     }
                 }
             }
-        }, 3000)
+        }
+    }
+
+    private suspend fun launchProgressBar() {
+        var progressStatus = 0
+        while (progressStatus < 100) {
+            progressStatus += 1
+            progressBar.progress = progressStatus
+            delay(30)
+        }
+    }
+
+    private suspend fun getStartMod(): String? = withContext(Dispatchers.IO) {
+        val phoneName = getPhoneName()
+        val locale = Locale.getDefault().language
+        val url = SERVER_URL +
+                "?phone_name=$phoneName" +
+                "&locale=$locale" +
+                "&unique=$uniqueId"
+        try {
+            val response = URL(url).readText()
+            if (response.isNotEmpty()) {
+                val jsonResponse = JSONObject(response)
+                val answer = jsonResponse.getString("url")
+                return@withContext answer
+            } else {
+                return@withContext null
+            }
+        } catch (e: Throwable) {
+            Log.i("SplashActivity", e.message + " " + e.localizedMessage)
+            return@withContext null
+        }
     }
 
     override fun onDestroy() {
@@ -153,5 +140,4 @@ class SplashActivity : AppCompatActivity() {
         val model = android.os.Build.MODEL
         return "$manufacturer $model"
     }
-
 }
